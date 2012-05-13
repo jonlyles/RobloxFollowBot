@@ -50,6 +50,7 @@ function FindNearestHumanoid( pos, HumanoidsList )
         
     for x = 1, #HumanoidsList do
         candidate = HumanoidsList[x]
+        assert( candidate.Humanoid )
         if (candidate.Position - pos).magnitude < distance then
             NearestHumanoid = candidate
             distance = (candidate.Position - pos).magnitude  -- what is the purpose of this line?
