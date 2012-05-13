@@ -1,6 +1,7 @@
 -- Finds all Humanoids in SearchArea
 -- Returns HumanoidsList, a table of all Humanoids in the SearchArea
 function GetHumanoids( SearchArea )
+    local HumanoidsList = {}
     -- Default SearchArea is Workspace
     SearchArea = SearchArea or game.Workspace      
     -- Check all children of SearchArea
