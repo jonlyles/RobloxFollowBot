@@ -26,7 +26,7 @@ end
 -- @param HumanoidsList, table containing 
 -- @return HumanoidsList, table (clean)
 function CleanHumanoids( HumanoidsList )
-    assert( Humanoids.className == 'Humanoid' )
+    assert( type(HumanoidsList) == 'table' )
     local HumanoidsClean = {}
     for x = 1, #HumanoidsList do
         if HumanoidsList[x] ~= script.Parent and HumanoidsList[x].Health ~= 0 then
