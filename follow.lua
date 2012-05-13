@@ -41,7 +41,7 @@ end
 -- @param pos, Vector3 Position 
 -- @param HumanoidsList, table containing Humanoids
 -- @return NearestHumanoid
-function findNearestHumanoid( pos, HumanoidsList )
+function FindNearestHumanoid( pos, HumanoidsList )
     assert( type(HumanoidsList) == 'table' )
     local NearestHumanoid = nil
     local candidate = nil
@@ -72,3 +72,11 @@ function FollowTarget(NearestHumanoid,Follower)
         script.Parent.Humanoid:MoveTo(target.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), target)
     end 
 end
+
+-- Run
+local pos = script.Parent.Position
+local FollowBot = script.Parent
+local HumanoidsList = GetHumanoids()
+HumanoidsList = CleanHumanoids(HumanoidsList)
+local NearestHumanoid = FindNearestHumanoid( pos, HumanoidsList )
+FollowTarget( NearestHumanoid, FollowBot )
