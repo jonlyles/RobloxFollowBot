@@ -74,7 +74,7 @@ function FollowTarget(NearestHumanoid,Follower)
 end
 
 -- Run
-local pos = script.Parent.Position
+local pos = script.Parent.Torso.Position
 local FollowBot = script.Parent
 local HumanoidsList = GetHumanoids()
 HumanoidsList = CleanHumanoids(HumanoidsList)
