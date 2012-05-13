@@ -1,5 +1,3 @@
--- Forked by TheEagleGuy from BontyHunter4567
-
 -- Finds all Humanoids in SearchArea
 -- Returns HumanoidsList, a table of all Humanoids in the SearchArea
 function GetHumanoids( SearchArea )
@@ -34,7 +32,8 @@ function CleanHumanoids( HumanoidsList )
             table.insert( HumanoidsClean, HumanoidsList[x] )
         end
     end
-    return HumanoidsList = HumanoidsClean
+    HumanoidsList = HumanoidsClean
+    return HumanoidsList
 end
 
 
@@ -66,11 +65,10 @@ function FollowTarget(NearestHumanoid,Follower)
     assert( NearestHumanoid ~= nil and Follower ~= nil )
     
     -- what is the purpose of this?
-    if ( target.Parent:findFirstChild("ForceField")) or (target.Parent:findFirstChild("ForceField")) or (target.Position.Y < script.Parent["Right Leg"].Position.Y) then 
-        else 
-            script.Parent.Humanoid:MoveTo(target.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), target)
-            wait(.15) 
-            script.Parent.Humanoid:MoveTo(target.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), target)
-        end 
+    if ( target.Parent:findFirstChild("ForceField")) or (target.Parent:findFirstChild("ForceField")) or (target.Position.Y < script.Parent["Right Leg"].Position.Y) then     
+    else 
+        script.Parent.Humanoid:MoveTo(target.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), target)
+        wait(.15) 
+        script.Parent.Humanoid:MoveTo(target.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), target)
     end 
 end
