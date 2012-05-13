@@ -1,6 +1,4 @@
 -- Forked by TheEagleGuy from BontyHunter4567
-local larm = script.Parent:FindFirstChild("Left Arm")
-local rarm = script.Parent:FindFirstChild("Right Arm")
 
 function findNearestTorso(pos)
     local list = game.Workspace:children()
