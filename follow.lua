@@ -3,7 +3,7 @@
 function findNearestTorso(pos)
     local list = game.Workspace:children()
     local torso = nil
-    local dist = 10
+    local distance = 10
     local temp = nil
     local human = nil
     local temp2 = nil
@@ -13,7 +13,7 @@ function findNearestTorso(pos)
             temp = temp2:findFirstChild("Torso")
             human = temp2:findFirstChild("Humanoid")
             if (temp ~= nil) and (human ~= nil) and (human.Health > 0) then
-                if (temp.Position - pos).magnitude < dist then
+                if (temp.Position - pos).magnitude < distance then
                     torso = temp
                     dist = (temp.Position - pos).magnitude
                     end 
