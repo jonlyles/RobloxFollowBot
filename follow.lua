@@ -1,10 +1,13 @@
 -- Finds all Humanoids in SearchArea
 -- Returns HumanoidsList, a table of all Humanoids in the SearchArea
+print("Executing game.Workspace.FollowBot.Follow.lua")
 function GetHumanoids( SearchArea )
     local HumanoidsList = {}
     -- Default SearchArea is Workspace
-    SearchArea = SearchArea or game.Workspace      
+    SearchArea = SearchArea or game.Workspace
+    assert( SearchArea == 'Workspace' or SearchArea:isDescendantOf(game), "Error: SearchArea must be Workspace or a descendant of Workspace.")     
     -- Check all children of SearchArea
+    assert( type(SearchArea:GetChildren()) == 'table', "Error: SearchArea wrong type, expected table, received " .. type(SearchArea))
     for key,val in pairs(SearchArea:GetChildren()) do
         -- Check if its ClassName is Model
         if val.ClassName == "Model" then
@@ -29,7 +32,8 @@ function CleanHumanoids( HumanoidsList )
     assert( type(HumanoidsList) == 'table' )
     local HumanoidsClean = {}
     for x = 1, #HumanoidsList do
-        if HumanoidsList[x] ~= script.Parent and HumanoidsList[x].Health ~= 0 then
+    assert( HumanoidsList[x].Humanoid.Health, "Asertion failed! Follow.lua, Health is not a property of HumanoidsList[x].Humanoid") 
+        if HumanoidsList[x] ~= script.Parent and HumanoidsList[x].Humanoid.Health ~= 0 then
             table.insert( HumanoidsClean, HumanoidsList[x] )
         end
     end
@@ -54,7 +58,6 @@ function GetTargetHumanoid( Follower, HumanoidsList )
         if ( candidate.Torso.Position - Follower.Position ).magnitude < distance then
             TargetHumanoid = candidate
             assert( TargetHumanoid ~= nil, "Function GetTargetHumanoid: TargetHumanoid is nil") 
-            --distance = (candidate.Torso.Position - pos).magnitude  -- what is the purpose of this line?
         end 
     end
     return TargetHumanoid    
@@ -65,30 +68,42 @@ end
 -- @param Follower, this is who will follow
 -- @return returns a callback, where to move the follower
 function FollowTarget(TargetHumanoid,Follower)
+TalkToTarget( Follower )
     local TargetHumanoid = TargetHumanoid or nil
     local Follower = Follower or nil
+    local distance = (TargetHumanoid.Torso.Position - Follower.Position).magnitude
     assert( TargetHumanoid ~= nil, "FollowTarget: TargetHumanoid is nil")
     assert( Follower ~= nil, "FollowTarget: Follower is nil")
-    
-    -- what is the purpose of this?
-    -- if ( TargetHumanoid.Parent:findFirstChild("ForceField")) or (TargetHumanoid.Parent:findFirstChild("ForceField")) or (TargetHumanoid.Torso.Position.Y < script.Parent["Right Leg"].Position.Y) then     
-    --else  
-    repeat
-        wait(.15)
-        script.Parent.Humanoid:MoveTo(TargetHumanoid.Torso.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), TargetHumanoid.Torso)
-    until false
-      --  @todo what is the condition to stop following the target??
-      --  wait(.15) 
-      --  script.Parent.Humanoid:MoveTo(TargetHumanoid.Torso.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), TargetHumanoid.Torso)
-    --end 
+    repeat 
+        repeat 
+            wait(.5)            
+        until ( TargetHumanoid.Torso.Position - Follower.Position ).magnitude >= distance
+            repeat
+                wait(.15)
+                script.Parent.Humanoid:MoveTo(TargetHumanoid.Torso.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), TargetHumanoid.Torso)
+            until ( TargetHumanoid.Torso.Position - Follower.Position ).magnitude < distance
+        
+    until TargetHumanoid.Humanoid.Health == 0 --and other conditions to add later 
+end
+
+function TalkToTarget( Follower )
+    local head = Follower.Parent.Head
+    assert( head )
+    local text = Instance.new('Dialog')
+    assert( text )
+    text.Parent = head
+    text.InitialPrompt = "I love you"
+    text.Purpose = 0 --quest
+    text.Tone = 1 --friendly tone
+    wait(3)
+    text:Destroy()
 end
 
 -- Run
 local Follower = script.Parent.Torso
-print(Follower)
-assert( Follower ~= nil, "Follower is nil")
 local HumanoidsList = GetHumanoids()
-print(HumanoidsList)
+assert( type(HumanoidsList) == 'table', "Error: HumanoidsList not a table")
+assert( HumanoidsList ~= nil, "Error: HumanoidsList is empty")
 HumanoidsList = CleanHumanoids(HumanoidsList)
 print(HumanoidsList)
 local TargetHumanoid = nil
@@ -96,5 +111,6 @@ local TargetHumanoid = nil
 repeat wait() 
 TargetHumanoid = GetTargetHumanoid( Follower, HumanoidsList )
 until TargetHumanoid ~= nil
-print("TargetHumanoid selected")
+assert(TargetHumanoid ~= nil )
+print("game.Workspace.FollowBot.follow.lua: TargetHumanoid selected")
 FollowTarget( TargetHumanoid, Follower )
