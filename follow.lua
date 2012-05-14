@@ -42,43 +42,59 @@ end
 -- @param pos, Vector3 Position 
 -- @param HumanoidsList, table containing Humanoids
 -- @return NearestHumanoid
-function FindNearestHumanoid( pos, HumanoidsList )
+function GetTargetHumanoid( Follower, HumanoidsList )
     assert( type(HumanoidsList) == 'table' )
-    local NearestHumanoid = nil
+    local TargetHumanoid = nil
     local candidate = nil
     local distance = 10
         
     for x = 1, #HumanoidsList do
         candidate = HumanoidsList[x]
         assert( candidate.Humanoid )
-        if (candidate.Torso.Position - pos).magnitude < distance then
-            NearestHumanoid = candidate
-            distance = (candidate.Torso.Position - pos).magnitude  -- what is the purpose of this line?
+        if ( candidate.Torso.Position - Follower.Position ).magnitude < distance then
+            TargetHumanoid = candidate
+            assert( TargetHumanoid ~= nil, "Function GetTargetHumanoid: TargetHumanoid is nil") 
+            --distance = (candidate.Torso.Position - pos).magnitude  -- what is the purpose of this line?
         end 
-    end 
-    return NearestHumanoid 
+    end
+    return TargetHumanoid    
 end 
 
 -- Follows a target
 -- @param NearestHumanoid, this is the target
 -- @param Follower, this is who will follow
 -- @return returns a callback, where to move the follower
-function FollowTarget(NearestHumanoid,Follower)
-    assert( NearestHumanoid ~= nil and Follower ~= nil )
+function FollowTarget(TargetHumanoid,Follower)
+    local TargetHumanoid = TargetHumanoid or nil
+    local Follower = Follower or nil
+    assert( TargetHumanoid ~= nil, "FollowTarget: TargetHumanoid is nil")
+    assert( Follower ~= nil, "FollowTarget: Follower is nil")
     
     -- what is the purpose of this?
-    if ( NearestHumanoid.Parent:findFirstChild("ForceField")) or (NearestHumanoid.Parent:findFirstChild("ForceField")) or (NearestHumanoid.Torso.Position.Y < script.Parent["Right Leg"].Position.Y) then     
-    else 
-        script.Parent.Humanoid:MoveTo(NearestHumanoid.Torso.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), NearestHumanoid.Torso.Position)
-        wait(.15) 
-        script.Parent.Humanoid:MoveTo(NearestHumanoid.Torso.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), NearestHumanoid.Torso.Position)
-    end 
+    -- if ( TargetHumanoid.Parent:findFirstChild("ForceField")) or (TargetHumanoid.Parent:findFirstChild("ForceField")) or (TargetHumanoid.Torso.Position.Y < script.Parent["Right Leg"].Position.Y) then     
+    --else  
+    repeat
+        wait(.15)
+        script.Parent.Humanoid:MoveTo(TargetHumanoid.Torso.Position + Vector3.new(math.random(1,3),0,math.random(1,3)), TargetHumanoid.Torso)
+    until false
+      --  @todo what is the condition to stop following the target??
+      --  wait(.15) 
+      --  script.Parent.Humanoid:MoveTo(TargetHumanoid.Torso.Position - Vector3.new(math.random(1,3),0,math.random(1,3)), TargetHumanoid.Torso)
+    --end 
 end
 
 -- Run
-local pos = script.Parent.Torso.Position
-local FollowBot = script.Parent
+local Follower = script.Parent.Torso
+print(Follower)
+assert( Follower ~= nil, "Follower is nil")
 local HumanoidsList = GetHumanoids()
+print(HumanoidsList)
 HumanoidsList = CleanHumanoids(HumanoidsList)
-local NearestHumanoid = FindNearestHumanoid( pos, HumanoidsList )
-FollowTarget( NearestHumanoid, FollowBot )
+print(HumanoidsList)
+local TargetHumanoid = nil
+
+repeat wait() 
+TargetHumanoid = GetTargetHumanoid( Follower, HumanoidsList )
+until TargetHumanoid ~= nil
+print("TargetHumanoid selected")
+FollowTarget( TargetHumanoid, Follower )
