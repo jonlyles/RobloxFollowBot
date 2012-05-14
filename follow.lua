@@ -50,7 +50,7 @@ function GetTargetHumanoid( Follower, HumanoidsList )
     assert( type(HumanoidsList) == 'table' )
     local TargetHumanoid = nil
     local candidate = nil
-    local distance = 10
+    local distance = 25
         
     for x = 1, #HumanoidsList do
         candidate = HumanoidsList[x]
@@ -89,14 +89,16 @@ end
 function TalkToTarget( Follower )
     local head = Follower.Parent.Head
     assert( head )
-    local text = Instance.new('Dialog')
+    local text = Instance.new('Dialog',Workspace)
     assert( text )
     text.Parent = head
-    text.InitialPrompt = "I love you"
     text.Purpose = 0 --quest
     text.Tone = 1 --friendly tone
-    wait(3)
-    text:Destroy()
+    text.DialogChoiceSelected:connect(function(player,choice)
+        text.InitialPrompt = "I love you" .. player.Name
+        wait(5)
+        text:Destroy()
+    end)
 end
 
 -- Run
